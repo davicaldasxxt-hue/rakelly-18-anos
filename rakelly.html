@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surpresa pra Rakelly 🎂</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* === CONTAGEM REGRESSIVA === */
+        #contador {
+            position: fixed;
+            text-align: center;
+            z-index: 100;
+        }
+
+        #contador h2 {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2em;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+       .tempo {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+       .bloco-tempo {
+            text-align: center;
+        }
+
+       .numero {
+            font-size: 4.5em;
+            font-weight: 700;
+            color: #FFD700;
+            text-shadow: 0 0 25px #FFD700;
+            display: block;
+            line-height: 1;
+            animation: pulsar 1s ease-in-out infinite;
+        }
+
+        @keyframes pulsar {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+       .label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        /* === CONTAGEM SUSPENSE 10 → 1 === */
+        #contagemFinal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        #numeroGrande {
+            font-size: 25em;
+            font-weight: 900;
+            color: #FFD700;
+            text-shadow: 0 0 50px #FFD700, 0 0 100px #FFD700;
+            animation: aparecerNumero 1s ease-out;
+            line-height: 1;
+        }
+
+        @keyframes aparecerNumero {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes sumirNumero {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+       .sumindo {
+            animation: sumirNumero 0.5s ease-in forwards!important;
+        }
+
+        /* === CONTEÚDO LIBERADO === */
+        #container {
+            position: relative;
+            text-align: center;
+            max-width: 90%;
+            display: none;
+            z-index: 50;
+        }
+
+       .linha {
+            position: relative;
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+       .letra {
+            display: inline-block;
+            font-size: 2.2em;
+            font-weight: 400;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.4s ease;
+            margin: 0 1px;
+        }
+
+       .letra.ativa {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+       .letra.balao {
+            animation: subirBalao 4s ease-in forwards;
+        }
+
+        @keyframes subirBalao {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-120vh) scale(0.7) rotate(15deg); opacity: 0; }
+        }
+
+       .instrucao {
+            position: fixed;
+            bottom: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9em;
+            font-weight: 300;
+            letter-spacing: 3px;
+            animation: piscar 2s ease-in-out infinite;
+            display: none;
+            z-index: 50;
+        }
+
+        @keyframes piscar {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* CORES ELEGANTES */
+       .cor1 { color: #FFD700; text-shadow: 0 0 12px #FFD700; }
+       .cor2 { color: #FFB6C1; text-shadow: 0 0 12px #FFB6C1; }
+       .cor3 { color: #E6E6FA; text-shadow: 0 0 12px #E6E6FA; }
+       .cor4 { color: #98D8E8; text-shadow: 0 0 12px #98D8E8; }
+       .cor5 { color: #F0E68C; text-shadow: 0 0 12px #F0E68C; }
+
+       .final {
+            position: fixed;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.1em;
+            bottom: 80px;
+            letter-spacing: 2px;
+            display: none;
+            z-index: 50;
+        }
+
+       .liberado-msg {
+            position: fixed;
+            top: 50px;
+            color: #FFD700;
+            font-size: 1.5em;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #FFD700;
+            animation: aparecerMsg 1s ease;
+            display: none;
+            z-index: 50;
+        }
+
+        @keyframes aparecerMsg {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- CONTAGEM SUSPENSE 10 → 1 -->
+    <div id="contagemFinal">
+        <div id="numeroGrande">10</div>
+    </div>
+
+    <!-- CONTAGEM REGRESSIVA -->
+    <div id="contador">
+        <h2>Faltam para os 18 anos da Rakelly</h2>
+        <div class="tempo">
+            <div class="bloco-tempo">
+                <span class="numero" id="dias">00</span>
+                <span class="label">Dias</span>
+            </div>
+            <div class="bloco-tempo">
+                <span class="numero" id="horas">00</span>
+                <span class="label">Horas</span>
+            </div>
+            <div class="bloco-tempo">
+                <span class="numero" id="minutos">00</span>
+                <span class="label">Minutos</span>
+            </div>
+            <div class="bloco-tempo">
+                <span class="numero" id="segundos">00</span>
+                <span class="label">Segundos</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENSAGEM QUANDO LIBERAR -->
+    <div class="liberado-msg" id="liberadoMsg">CHEGOU O GRANDE DIA! 🎉</div>
+
+    <!-- CONTEÚDO DO TEXTO -->
+    <div id="container"></div>
+    <div class="instrucao">TOQUE PARA REVELAR SUA SURPRESA</div>
+    <div class="final">COM AMOR,DAVI 💖</div>
+
+    <script>
+        // ⚠️ TROCA A DATA DO ANIVERSÁRIO DELA AQUI ⚠️
+        const dataAniversario = new Date("2026-06-15T17:26:00"); // 15 de Outubro de 2026
+
+        const frases = [
+            "Feliz Aniversário, Rakelly!",
+            "Parabéns por completar hoje seus 18 anos",
+            "Espero que goste do que eu fiz com amor e carinho para você",
+            "Adoro os seus olhos que são tão lindos e brilhantes",
+            "Eles me encantam e me fazem sentir feliz",
+            "Adoro o seu sorriso, ele é tão contagiante e ilumina o meu dia",
+            "Gosto do seu jeitinho de ser, tão doce e gentil",
+            "Me faz sentir especial",
+            "Às vezes um pouco grossinha, mas isso é o que te torna única e autêntica",
+            "Te admiro muito",
+            "Espero que goste do presente que eu fiz para você",
+            "E que ele te faça sorrir tanto quanto o seu sorriso me faz sorrir",
+            "Lembre-se sempre de que você é amada e apreciada por quem você é",
+            "E que eu estou aqui para te apoiar",
+            "Você merece ser amada e feliz em voz alta!",
+            "E eu espero que este presente seja um pequeno gesto",
+            "Para mostrar o quanto você é especial",
+            "Feliz aniversário meu bem! 💖"
+        ];
+
+        const cores = ['cor1', 'cor2', 'cor3', 'cor4', 'cor5'];
+        const container = document.getElementById('container');
+        const contador = document.getElementById('contador');
+        const instrucao = document.querySelector('.instrucao');
+        const liberadoMsg = document.getElementById('liberadoMsg');
+        const finalMsg = document.querySelector('.final');
+        const contagemFinal = document.getElementById('contagemFinal');
+        const numeroGrande = document.getElementById('numeroGrande');
+        let iniciado = false;
+        let linhaAtual = 0;
+        let liberado = false;
+        let contagemAtiva = false;
+
+        // === CONTAGEM SUSPENSE 10 → 1 ===
+        function iniciarContagemFinal() {
+            contagemFinal.style.display = 'flex';
+            contador.style.display = 'none';
+            contagemAtiva = true;
+            let num = 10;
+
+            const intervalo = setInterval(() => {
+                if (num > 0) {
+                    numeroGrande.textContent = num;
+                    numeroGrande.classList.remove('sumindo');
+                    void numeroGrande.offsetWidth; // Reinicia animação
+                    numeroGrande.style.animation = 'aparecerNumero 1s ease-out';
+
+                    setTimeout(() => {
+                        numeroGrande.classList.add('sumindo');
+                    }, 500);
+
+                    num--;
+                } else {
+                    clearInterval(intervalo);
+                    contagemFinal.style.display = 'none';
+                    contagemAtiva = false;
+                }
+            }, 1000);
+        }
+
+        // ATUALIZA CONTADOR
+        function atualizarContador() {
+            const agora = new Date();
+            const diferenca = dataAniversario - agora;
+
+            if (diferenca <= 0) {
+                liberarPresente();
+                return;
+            }
+
+            // ATIVA CONTAGEM NOS 10S FINAIS
+            if (diferenca <= 10000 && diferenca > 9000 &&!contagemAtiva &&!liberado) {
+                iniciarContagemFinal();
+            }
+
+            const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+
+            document.getElementById('dias').textContent = String(dias).padStart(2, '0');
+            document.getElementById('horas').textContent = String(horas).padStart(2, '0');
+            document.getElementById('minutos').textContent = String(minutos).padStart(2, '0');
+            document.getElementById('segundos').textContent = String(segundos).padStart(2, '0');
+        }
+
+        function liberarPresente() {
+            liberado = true;
+            contador.style.display = 'none';
+            contagemFinal.style.display = 'none';
+            liberadoMsg.style.display = 'block';
+            container.style.display = 'block';
+            instrucao.style.display = 'block';
+            finalMsg.style.display = 'block';
+        }
+
+        // CHECA SE JÁ PASSOU DA DATA
+        if (new Date() >= dataAniversario) {
+            liberarPresente();
+        } else {
+            setInterval(atualizarContador, 1000);
+            atualizarContador();
+        }
+
+        // FUNÇÕES DO TEXTO - NÃO MUDEI NADA
+        function criarLinha(texto) {
+            const divLinha = document.createElement('div');
+            divLinha.className = 'linha';
+
+            texto.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.className = `letra ${cores[index % cores.length]}`;
+                span.textContent = char === ' '? '\u00A0' : char;
+                divLinha.appendChild(span);
+            });
+
+            container.appendChild(divLinha);
+            return divLinha.querySelectorAll('.letra');
+        }
+
+        function animarLinha(letras) {
+            letras.forEach((letra, index) => {
+                setTimeout(() => {
+                    letra.classList.add('ativa');
+                }, index * 40);
+            });
+        }
+
+        function virarBalao(letras) {
+            letras.forEach((letra, index) => {
+                setTimeout(() => {
+                    letra.classList.add('balao');
+                }, index * 80);
+            });
+        }
+
+        function proximaLinha() {
+            if (linhaAtual >= frases.length) {
+                setTimeout(() => {
+                    container.innerHTML = '';
+                    instrucao.style.display = 'block';
+                    iniciado = false;
+                    linhaAtual = 0;
+                }, 5000);
+                return;
+            }
+
+            const letras = criarLinha(frases[linhaAtual]);
+            animarLinha(letras);
+
+            setTimeout(() => {
+                virarBalao(letras);
+                setTimeout(() => {
+                    linhaAtual++;
+                    proximaLinha();
+                }, 3000);
+            }, 4000);
+        }
+
+        document.body.addEventListener('click', () => {
+            if (liberado &&!iniciado) {
+                iniciado = true;
+                instrucao.style.display = 'none';
+                liberadoMsg.style.display = 'none';
+                proximaLinha();
+            }
+        });
+    </script>
+</body>
+</html>
+
+       
